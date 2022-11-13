@@ -135,8 +135,9 @@ public class Deck {
    int valueOfCard = tmpHead.getValue();
    if(valueOfCard==numOfCards || valueOfCard==numOfCards-1){
 
-    if(color.equals(((Joker)tmpHead).getColor()));
-    return (Joker) tmpHead;
+    if(tmpHead instanceof Joker && color.equals(((Joker)tmpHead).getColor())) {
+     return (Joker) tmpHead;
+    }
    }
    tmpHead = tmpHead.next;
   }
@@ -171,9 +172,25 @@ public class Deck {
   */
  public void tripleCut(Card firstCard, Card secondCard) {
   /**** ADD CODE HERE ****/
-  firstCard.next = head;
-  head.prev = secondCard;
-  secondCard.prev = firstCard;
+  if(firstCard == head){
+   head = firstCard.prev;
+   secondCard = head.prev;
+  } else if(secondCard == head.prev) {
+   head = firstCard;
+   secondCard.next = firstCard.prev;
+  } else {
+   Card temp = head;
+   Card tail = head.prev;
+   Card preFirst = firstCard.prev;
+   head = secondCard.next;
+   head.prev = firstCard.prev;
+   temp.prev = secondCard;
+   secondCard.next = temp;
+   tail.next = firstCard;
+   firstCard.prev = tail;
+   preFirst.next = tail;
+
+  }
 
  }
 
@@ -183,7 +200,34 @@ public class Deck {
   * then the method should not do anything. This method runs in O(n).
   */
  public void countCut() {
-  /**** ADD CODE HERE ****/
+   Card[] arrOfDeck = new Card[this.numOfCards];
+   Card bottomCard = head.prev;
+   Card temp = bottomCard.prev;
+   Card firstCard = head;
+   // Copy all the cards inside the array
+   int curPos = 0;
+   for (int i = 0; i < this.numOfCards; i++) {
+    arrOfDeck[curPos++] = temp;
+    temp = temp.next;
+   }
+
+   int cutValue = bottomCard.getValue()%this.numOfCards;
+   if (cutValue != 0) {
+     Card c = arrOfDeck[cutValue-1];
+     System.out.println(cutValue);
+     System.out.println(c.toString());
+     if (c != temp) {
+      c.next = bottomCard;
+      bottomCard.prev = c;
+      bottomCard.next = temp;
+      temp.next = firstCard;
+      temp.prev = bottomCard;
+      head = temp;
+
+
+    }
+   }
+
 
  }
 

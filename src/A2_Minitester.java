@@ -302,6 +302,7 @@ class LocateJoker_Test2 implements Runnable{
 class LocateJoker_Test3 implements Runnable{
     @Override
     public void run() {
+
         Deck tdeck = new Deck();
         Deck.Card c1 = tdeck.new PlayingCard(Deck.suitsInOrder[0], 1); //AC
         Deck.Card expected = tdeck.new Joker("red");
@@ -327,6 +328,7 @@ class LocateJoker_Test3 implements Runnable{
 }
 
 
+
 class LookUpCard_Test1 implements Runnable{
     @Override
     public void run() {
@@ -338,6 +340,8 @@ class LookUpCard_Test1 implements Runnable{
         tdeck.addCard(c1);
         tdeck.addCard(expected);
         tdeck.addCard(c3);
+        
+        
 
         Deck.Card received = tdeck.lookUpCard();
         if (expected != received){
@@ -834,6 +838,264 @@ class Shuffle_Three implements Runnable{
     }
 }
 
+class TripleCut1 implements Runnable{
+    @Override
+    public void run() {
+        // For the edge case of tripleCut() when there are no cards before the 1st card
+        // firstCard is the head of the deck
+
+        Deck deck = new Deck();
+        Deck.Card c1 = deck.new PlayingCard(Deck.suitsInOrder[0], 1); //AC
+        Deck.Card c2 = deck.new PlayingCard(Deck.suitsInOrder[0], 2); //2C
+        Deck.Card c3 = deck.new PlayingCard(Deck.suitsInOrder[2], 1); //AH
+        Deck.Card c4 = deck.new PlayingCard(Deck.suitsInOrder[2], 2); //2H
+
+        deck.addCard(c1);
+        deck.addCard(c2);
+        deck.addCard(c3);
+        deck.addCard(c4);   // AC 2C AH 2H
+
+        deck.tripleCut(c1, c3); // Expected outcome: 2H AC 2C AH
+
+        // test whether all the cards are in the right order
+        boolean head = deck.head == c4; //2H
+        boolean tail = deck.head.prev == c3; //AH
+        boolean c4Ref = c4.next == c1 && c4.prev == c3;
+        boolean c3Next = c3.next == c4;
+        boolean c1Prev = c1.prev == c4;
+
+        if (!(head && tail)) {
+        throw new AssertionError("The head/tail is incorrect");
+        } else if (!(c4Ref && c3Next && c1Prev)) {
+        throw new AssertionError("The pointers of the cards are incorrect");
+        }
+        System.out.println("assignment2.Test passed.");
+        }
+        }
+
+class TripleCut2 implements Runnable {
+    @Override
+    public void run() {
+        // For the edge case of tripleCut() when there are no cards after the 2nd card
+        // secondCard is the tail of the deck
+
+        Deck deck = new Deck();
+        Deck.Card c1 = deck.new PlayingCard(Deck.suitsInOrder[0], 1); //AC
+        Deck.Card c2 = deck.new PlayingCard(Deck.suitsInOrder[0], 2); //2C
+        Deck.Card c3 = deck.new PlayingCard(Deck.suitsInOrder[2], 1); //AH
+        Deck.Card c4 = deck.new PlayingCard(Deck.suitsInOrder[2], 2); //2H
+
+        deck.addCard(c1);
+        deck.addCard(c2);
+        deck.addCard(c3);
+        deck.addCard(c4); // AC 2C AH 2H
+
+
+        deck.tripleCut(c2, c4); // Expected Outcome: 2C AH 2H AC
+
+
+        boolean head = deck.head == c2;
+        boolean tail = deck.head.prev == c1;
+        boolean c2Prev = c2.prev == c1;
+        boolean c1Ref = c1.prev == c4 && c1.next == c2;
+        boolean c4Next = c4.next == c1;
+
+        if (!(head && tail)) {
+            throw new AssertionError("The head/tail is incorrect");
+        } else if (!(c2Prev && c1Ref && c4Next)) {
+            throw new AssertionError("The pointers of the cards are incorrect");
+        }
+        System.out.println("assignment2.Test passed.");
+    }
+}
+
+
+class TripleCut3 implements Runnable {
+    @Override
+    public void run() {
+        // regular case of tripleCut()
+
+        Deck deck = new Deck();
+        Deck.Card c1 = deck.new PlayingCard(Deck.suitsInOrder[0], 1); //AC
+        Deck.Card c2 = deck.new PlayingCard(Deck.suitsInOrder[0], 2); //2C
+        Deck.Card c3 = deck.new PlayingCard(Deck.suitsInOrder[2], 1); //AH
+        Deck.Card c4 = deck.new PlayingCard(Deck.suitsInOrder[2], 2); //2H
+        Deck.Card c5 = deck.new PlayingCard(Deck.suitsInOrder[3], 1); //AS
+        Deck.Card c6 = deck.new PlayingCard(Deck.suitsInOrder[3], 2); //2S
+
+        deck.addCard(c1);
+        deck.addCard(c2);
+        deck.addCard(c3);
+        deck.addCard(c4);
+        deck.addCard(c5);
+        deck.addCard(c6);       // Deck: AC 2C AH 2H AS 2S
+
+        deck.tripleCut(c3, c5);  // Expected outcome: 2S AH 2H AS AC 2C
+
+        boolean head = deck.head == c6;
+        boolean tail = deck.head.prev == c2;
+        boolean c1Ref = c1.prev == c5 && c1.next == c2;
+        boolean c2Ref = c2.prev == c1 && c2.next == c6;
+        boolean c3Ref = c3.prev == c6 && c3.next == c4;
+        boolean c4ref = c4.prev == c3 && c4.next == c5;
+        boolean c5Ref = c5.prev == c4 && c5.next == c1;
+        boolean c6Ref = c6.prev == c2 && c6.next == c3;
+
+        if (!(head && tail)) {
+            throw new AssertionError("The head/tail is incorrect");
+        } else if (!(c1Ref && c2Ref && c3Ref && c4ref && c5Ref && c6Ref)) {
+            throw new AssertionError("The pointers of the cards are incorrect");
+        }
+        System.out.println("assignment2.Test passed.");
+    }
+}
+
+
+class TripleCut4 implements Runnable {
+    @Override
+    public void run() {
+        // For the edge case of tripleCut() there are three cards and firstCard
+        // and secondCard are the same
+
+        Deck deck = new Deck();
+        Deck.Card c1 = deck.new PlayingCard(Deck.suitsInOrder[0], 1); //AC
+        Deck.Card c2 = deck.new PlayingCard(Deck.suitsInOrder[0], 2); //2C
+        Deck.Card c3 = deck.new PlayingCard(Deck.suitsInOrder[2], 1); //AH
+
+        deck.addCard(c1);
+        deck.addCard(c2);
+        deck.addCard(c3);
+
+        // Before:
+        // head = c1, c2, c3
+        // AC, 2C, AH
+        deck.tripleCut(c2, c2);
+        // Expected deck arrangement:
+        // head = c3, c2, c1
+        // AH, 2C, AC
+
+        boolean head = deck.head == c3;
+        boolean tail = deck.head.prev == c1;
+        boolean c1Ref = c1.prev == c2 && c1.next == c3;
+        boolean c2Ref = c2.prev == c3 && c2.next == c1;
+        boolean c3Ref = c3.prev == c1 && c3.next == c2;
+
+        if (!(head && tail)) {
+            throw new AssertionError("The head/tail is incorrect");
+        } else if (!(c1Ref && c2Ref && c3Ref)) {
+            throw new AssertionError("The pointers of the cards are incorrect");
+        }
+        System.out.println("assignment2.Test passed.");
+    }
+}
+
+
+class CountCut1 implements Runnable{
+    @Override
+    public void run() {
+        // regular case
+
+        Deck deck = new Deck();
+
+        Deck.Card c1 = deck.new PlayingCard(Deck.suitsInOrder[0], 1); //AC
+        Deck.Card c2 = deck.new PlayingCard(Deck.suitsInOrder[0], 2); //2C
+        Deck.Card c3 = deck.new PlayingCard(Deck.suitsInOrder[2], 1); //AH
+        Deck.Card c4 = deck.new PlayingCard(Deck.suitsInOrder[2], 2); //2H
+
+        deck.addCard(c1);
+        deck.addCard(c3);
+        deck.addCard(c4);
+        deck.addCard(c2);      // Deck : AC AH 2H 2C
+        deck.printDeck();
+        deck.countCut();       // Cut 2 numbers from the top (taking value of 2C)
+        // Expected Deck Outcome : 2H AC AH 2C
+
+        boolean head = deck.head == c4;
+        boolean tail = deck.head.prev == c2;
+        boolean c4Ref = c4.prev == c2 && c4.next == c1;
+        boolean c1Ref = c1.prev == c4 && c1.next == c3;
+        boolean c3ref = c3.prev == c1 && c3.next == c2;
+        boolean c2Ref = c2.prev == c3 && c2.next == c4;
+        deck.printDeck();
+        System.out.println(c3.prev.toString()); // AC
+        System.out.println(c3.next.toString()); //2c
+
+
+
+
+        if (!(head && tail)) {
+            throw new AssertionError("The head/tail is incorrect");
+        } else if (!(c4Ref && c1Ref && c3ref && c2Ref)) {
+            throw new AssertionError("The pointers of the cards are incorrect");
+        }
+        System.out.println("assignment2.Test passed.");
+    }
+}
+
+class CountCut2 implements Runnable {
+    @Override
+    public void run() {
+        // when the value of the last card is a multiplier of the number of cards in the deck
+
+        Deck deck = new Deck();
+        Deck.PlayingCard c1 = deck.new PlayingCard(Deck.suitsInOrder[0], 1); //AC
+        Deck.PlayingCard c2 = deck.new PlayingCard(Deck.suitsInOrder[0], 2); //2C
+        Deck.PlayingCard c3 = deck.new PlayingCard(Deck.suitsInOrder[0], 3); //3C
+        Deck.PlayingCard c4 = deck.new PlayingCard(Deck.suitsInOrder[0], 4); //4C
+
+        deck.addCard(c1);
+        deck.addCard(c2);
+        deck.addCard(c3);
+        deck.addCard(c4);      // Deck : AC 2C 3C 4C
+
+        deck.countCut();       // Do nothing because 4 is a multiplier of 4
+
+        if(!(deck.head == c1) && deck.head.prev == c4) {
+            throw new AssertionError("The method countCut() is modifying the deck when it shouldn't");
+        }
+        System.out.println("assignment2.Test passed.");
+    }
+}
+
+class CountCut3 implements Runnable{
+    @Override
+    public void run() {
+        // when the number for cut is 1
+
+        Deck deck = new Deck();
+
+        Deck.Card c1 = deck.new PlayingCard(Deck.suitsInOrder[0], 1); //AC
+        Deck.Card c2 = deck.new PlayingCard(Deck.suitsInOrder[0], 3); //3C
+
+        deck.addCard(c1);
+        deck.addCard(c2);
+
+        deck.countCut();       // Should put AC above 3C (technically not changing the deck)
+
+        if(!(deck.head == c1) && deck.head.prev == c2) {
+            throw new AssertionError("The method countCut() is modifying the deck when it shouldn't");
+        }
+        System.out.println("assignment2.Test passed.");
+    }
+}
+
+class CountCut4 implements Runnable{
+    @Override
+    public void run() {
+        // when the deck is empty
+        Deck deck = new Deck();
+
+        deck.countCut();        // should do nothing
+
+        if(!(deck.head == null)) {
+            throw new AssertionError("The method countCut() is not handling the case of an empty deck");
+        }
+        System.out.println("assignment2.Test passed.");
+    }
+}
+
+
+
 
 public class A2_Minitester {
     // To skip running some tests, just comment them out below.
@@ -861,7 +1123,8 @@ public class A2_Minitester {
         "Shuffle_FullDeck",
         "Shuffle_NewCard",
         "Shuffle_SingleCard",
-        "Shuffle_Three"
+        "Shuffle_Three", "TripleCut1", "TripleCut2","TripleCut3", "TripleCut4",
+            "CountCut1", "CountCut2", "CountCut3", "CountCut4"
     };
     public static void main(String[] args) {
         int numPassed = 0;

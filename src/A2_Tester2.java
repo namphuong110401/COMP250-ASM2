@@ -1,5 +1,3 @@
-package assignment2;
-
 import java.util.Arrays;
 
 class CreateDeck1 implements Runnable {
@@ -417,6 +415,7 @@ class GenerateNextKeystreamValue1 implements Runnable {
         deck.shuffle();     // 3C 3D AD 5C BJ 2C 2D 4D AC RJ 4C 5D
 
         int value = deck.generateNextKeystreamValue();
+        deck.printDeck();
 
 
         if (value != 4) {
@@ -671,31 +670,31 @@ class SolitaireCipher2 implements Runnable {
 public class A2_Tester2 {
     // To skip running some tests, just comment them out below.
     static String[] tests = {
-            "assignment2.CreateDeck1",
-            "assignment2.CreateDeck2",
-            "assignment2.CreateDeck3",
-            "assignment2.DeepCopyDeck1",
-            "assignment2.MoveCard1",
-            "assignment2.TripleCut1",
-            "assignment2.TripleCut2",
-            "assignment2.TripleCut3",
-            "assignment2.TripleCut4",
-            "assignment2.CountCut1",
-            "assignment2.CountCut2",
-            "assignment2.CountCut3",
-            "assignment2.CountCut4",
-            "assignment2.LocateJoker1",
-            "assignment2.LocateJoker2",
-            "assignment2.GenerateNextKeystreamValue1",
-            "assignment2.GenerateNextKeystreamValue2",
-            "assignment2.GenerateNextKeystreamValue3",
-            "assignment2.GenerateNextKeystreamValue4",
-            "assignment2.GetKeystream1",
-            "assignment2.GetKeystream2",
-            "assignment2.EncodingAndDecodingTest1",
-            "assignment2.EncodingAndDecodingTest2",
-            "assignment2.SolitaireCipher1",
-            "assignment2.SolitaireCipher2",
+            "CreateDeck1",
+            "CreateDeck2",
+            "CreateDeck3",
+            "DeepCopyDeck1",
+            "MoveCard1",
+            "TripleCut1",
+            "TripleCut2",
+            "TripleCut3",
+            "TripleCut4",
+            "CountCut1",
+            "CountCut2",
+            "CountCut3",
+            "CountCut4",
+            "LocateJoker1",
+            "LocateJoker2",
+            "GenerateNextKeystreamValue1",
+            "GenerateNextKeystreamValue2",
+            "GenerateNextKeystreamValue3",
+            "GenerateNextKeystreamValue4",
+            "GetKeystream1",
+            "GetKeystream2",
+            "EncodingAndDecodingTest1",
+            "EncodingAndDecodingTest2",
+            "SolitaireCipher1",
+            "SolitaireCipher2",
     };
 
     public static void main(String[] args) {

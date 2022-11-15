@@ -10,7 +10,11 @@ public class SolitaireCipher {
   */
  public int[] getKeystream(int size) {
   /**** ADD CODE HERE ****/
-  return null;
+   int[] array = new int[size];
+   for (int i = 0; i < size; i++) {
+    array[i] = key.generateNextKeystreamValue();
+   }
+   return array;
  }
   
  /* 

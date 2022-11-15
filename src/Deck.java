@@ -26,10 +26,10 @@ public class Deck {
    }
   }
   // create card for red joker and insert at end
-  Card newRJ = new PlayingCard("RJ", 0);
+  Card newRJ = new Joker("red");
   this.addCard(newRJ);
   // create card for black joker and insert at end
-  Card newBJ = new PlayingCard("BJ", 0);
+  Card newBJ = new Joker("black");
   this.addCard(newBJ);
  }
 
@@ -78,15 +78,15 @@ public class Deck {
   /**** ADD CODE HERE ****/
    // check if the list is empty, add a node
   if(head==null){
-    head = c;
-    c.next = c.prev = c;
+     head = c;
+     c.next = c.prev = c;
   } else { //add new card at the end
-    Card last = head.prev;
-    last.next = c;
-    c.prev = last;
-    c.next = head;
-    head.prev = c;
-  }
+       Card last = head.prev;
+       last.next = c;
+       c.prev = last;
+       c.next = head;
+       head.prev = c;
+     }
   numOfCards++;
  }
 
@@ -101,26 +101,26 @@ public class Deck {
   Card tmpHead = this.head;
   int curPos = 0;
   for (int i = 0; i < this.numOfCards; i++) {
-    arrOfDeck[curPos++] = tmpHead;
-    tmpHead = tmpHead.next;
-   }
+      arrOfDeck[curPos++] = tmpHead;
+      tmpHead = tmpHead.next;
+     }
 
   //shuffle
   for (int i =this.numOfCards-1; i>=1; i--){
-   int j = gen.nextInt(i+1);
-   Card temp = arrOfDeck[i];
-   arrOfDeck[i] = arrOfDeck[j];
-   arrOfDeck[j] = temp;
-  }
+      int j = gen.nextInt(i+1);
+      Card temp = arrOfDeck[i];
+      arrOfDeck[i] = arrOfDeck[j];
+      arrOfDeck[j] = temp;
+     }
   //rebuild the shuffle deck
   int length = this.numOfCards;
   for (int i = 0; i < length; i++) {
-   arrOfDeck[i].next = arrOfDeck[(i+1)%length];
-   arrOfDeck[i].prev = arrOfDeck[(i-1+length)%length];
-  }
+      arrOfDeck[i].next = arrOfDeck[(i+1)%length];
+      arrOfDeck[i].prev = arrOfDeck[(i-1+length)%length];
+     }
   if (tmpHead != null) {
-   this.head = arrOfDeck[0];
-  }
+     this.head = arrOfDeck[0];
+    }
  }
 
  /*
@@ -132,12 +132,12 @@ public class Deck {
   /**** ADD CODE HERE ****/
   Card tmpHead = head;
   for (int i = 0; i < this.numOfCards; i++) {
-   int valueOfCard = tmpHead.getValue();
-   if(valueOfCard==numOfCards || valueOfCard==numOfCards-1){
+      int valueOfCard = tmpHead.getValue();
+      if(valueOfCard==numOfCards-1){
 
-    if(tmpHead instanceof Joker && color.equals(((Joker)tmpHead).getColor())) {
-     return (Joker) tmpHead;
-    }
+       if(tmpHead instanceof Joker && color.equals(((Joker)tmpHead).getColor())) {
+        return (Joker) tmpHead;
+       }
    }
    tmpHead = tmpHead.next;
   }
@@ -152,17 +152,23 @@ public class Deck {
  public void moveCard(Card c, int p) {
   /**** ADD CODE HERE ****/
   Card tmpHead = c;
+
+
   while(p!=0){
    tmpHead = tmpHead.next;
    p--;
   }
+
   Card prevPointer = c.prev;
   prevPointer.next = c.next;
   c.next.prev = prevPointer;
+
   c.next = tmpHead.next;
   tmpHead.next = c;
+
   c.prev = tmpHead;
   c.next.prev = tmpHead.next;
+
  }
 
  /*
@@ -200,35 +206,30 @@ public class Deck {
   * then the method should not do anything. This method runs in O(n).
   */
  public void countCut() {
-   Card[] arrOfDeck = new Card[this.numOfCards];
-   Card bottomCard = head.prev;
-   Card temp = bottomCard.prev;
-   Card firstCard = head;
-   // Copy all the cards inside the array
-   int curPos = 0;
-   for (int i = 0; i < this.numOfCards; i++) {
-    arrOfDeck[curPos++] = temp;
-    temp = temp.next;
+  if(head!=null) {
+      Card last = head.prev;
+      Card temp = last.prev;
+      Card bot = head;
+      int cutValue = last.getValue() % this.numOfCards;
+      for (int i = 0; i < cutValue - 1; i++) {
+       bot = bot.next;
+      }
+
+      if (cutValue != 0 && cutValue < this.numOfCards - 1) {
+       Card newHead = last.next;
+
+       bot.next = last;
+       last.prev = bot;
+
+       last.next = temp;
+       temp.prev = last;
+       head = temp;
+
+       newHead.prev = temp;
+       temp.next = newHead;
+
+      }
    }
-
-   int cutValue = bottomCard.getValue()%this.numOfCards;
-   if (cutValue != 0) {
-     Card c = arrOfDeck[cutValue-1];
-     System.out.println(cutValue);
-     System.out.println(c.toString());
-     if (c != temp) {
-      c.next = bottomCard;
-      bottomCard.prev = c;
-      bottomCard.next = temp;
-      temp.next = firstCard;
-      temp.prev = bottomCard;
-      head = temp;
-
-
-    }
-   }
-
-
  }
 
  /*
@@ -239,7 +240,20 @@ public class Deck {
   */
  public Card lookUpCard() {
   /**** ADD CODE HERE ****/
-  return null;
+  Card temp = head;
+  int valueToLook = temp.getValue();
+  while(valueToLook!=0){
+     temp = temp.next;
+     valueToLook--;
+    }
+  //checking for joker
+  int valueOfCard = temp.getValue();
+  if(valueOfCard==numOfCards || valueOfCard == numOfCards-1){
+    if(temp instanceof Joker) {
+      return null;
+    }
+  }
+  return temp;
  }
 
  /*
@@ -248,7 +262,40 @@ public class Deck {
   */
  public int generateNextKeystreamValue() {
   /**** ADD CODE HERE ****/
-  return 0;
+  Joker red = this.locateJoker("red");
+  Joker black = this.locateJoker("black");
+
+
+  // 1. Locate red and move it one card down
+  moveCard(red, 1);
+
+  // 2. Locate black and move it two cards down
+  moveCard(black, 2);
+
+
+  // 3. Triple cut
+  // Find top joker
+  Card top = this.head;
+  while (!(top instanceof Joker)) {
+   top = top.next;
+  }
+
+  // Triple cut
+  if (top == red) {
+   this.tripleCut(red, black);
+  } else tripleCut(black, red);
+
+  // 4. Count cut
+  countCut();
+
+  // 5. Look up Card
+  Card keystreamCard = lookUpCard();
+
+  if (keystreamCard == null) {
+   return generateNextKeystreamValue();
+  }
+
+  return keystreamCard.getValue();
  }
 
 

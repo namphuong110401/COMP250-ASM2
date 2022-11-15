@@ -179,21 +179,25 @@ public class Deck {
  public void tripleCut(Card firstCard, Card secondCard) {
   /**** ADD CODE HERE ****/
   if(firstCard == head){
-   head = firstCard.prev;
-   secondCard = head.prev;
+   head = secondCard.next;
+
   } else if(secondCard == head.prev) {
    head = firstCard;
-   secondCard.next = firstCard.prev;
+
   } else {
    Card temp = head;
    Card tail = head.prev;
    Card preFirst = firstCard.prev;
+
    head = secondCard.next;
    head.prev = firstCard.prev;
+
    temp.prev = secondCard;
    secondCard.next = temp;
+
    tail.next = firstCard;
    firstCard.prev = tail;
+
    preFirst.next = tail;
 
   }
@@ -284,6 +288,7 @@ public class Deck {
   if (top == red) {
    this.tripleCut(red, black);
   } else tripleCut(black, red);
+  printDeck();
 
   // 4. Count cut
   countCut();

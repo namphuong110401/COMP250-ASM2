@@ -415,7 +415,7 @@ class GenerateNextKeystreamValue1 implements Runnable {
         deck.shuffle();     // 3C 3D AD 5C BJ 2C 2D 4D AC RJ 4C 5D
 
         int value = deck.generateNextKeystreamValue();
-        deck.printDeck();
+
 
 
         if (value != 4) {

@@ -188,9 +188,11 @@ public class Deck {
    Card temp = head;
    Card tail = head.prev;
    Card preFirst = firstCard.prev;
+   Card newHead = secondCard.next;
 
-   head = secondCard.next;
-   head.prev = firstCard.prev;
+   head = newHead;
+   newHead.prev = preFirst;
+   preFirst.next = tail;
 
    temp.prev = secondCard;
    secondCard.next = temp;
@@ -198,7 +200,6 @@ public class Deck {
    tail.next = firstCard;
    firstCard.prev = tail;
 
-   preFirst.next = tail;
 
   }
 
@@ -211,29 +212,30 @@ public class Deck {
   */
  public void countCut() {
   if(head!=null) {
-      Card last = head.prev;
-      Card temp = last.prev;
-      Card bot = head;
-      int cutValue = last.getValue() % this.numOfCards;
-      for (int i = 0; i < cutValue - 1; i++) {
-       bot = bot.next;
-      }
+   Card last = head.prev;
+   Card temp = last.prev;
+   Card bot = head;
+   int cutValue = last.getValue() % this.numOfCards;
 
-      if (cutValue != 0 && cutValue < this.numOfCards - 1) {
-       Card newHead = last.next;
-
-       bot.next = last;
-       last.prev = bot;
-
-       last.next = temp;
-       temp.prev = last;
-       head = temp;
-
-       newHead.prev = temp;
-       temp.next = newHead;
-
-      }
+   for (int i = 0; i < cutValue - 1; i++) {
+    bot = bot.next;
    }
+
+   if (cutValue != 0 && cutValue < this.numOfCards - 1) {
+    Card newHead = bot.next;
+
+    bot.next = last;
+    last.prev = bot;
+
+    temp.next = head;
+    head.prev = temp;
+
+    last.next = newHead;
+    newHead.prev = last;
+    head = newHead;
+
+   }
+  }
  }
 
  /*
@@ -288,7 +290,6 @@ public class Deck {
   if (top == red) {
    this.tripleCut(red, black);
   } else tripleCut(black, red);
-  printDeck();
 
   // 4. Count cut
   countCut();
